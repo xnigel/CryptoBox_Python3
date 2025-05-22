@@ -56,10 +56,22 @@
 #   20. Code migration from Python2 to Python3 20230825 - v02.01.01
 #   21. Correcting the functionalities in the Python3 code 20230919 - v02.01.02
 #   22. Released final version - v02.02.00
-# ________________________________________________________________________________#
+#   23. Adding new files hasing - v02.03.xx - from 2024.10.25
+# ______________________________________________________________________________#
+
+#   Python Execution Guidance                                                   #    
+#                                                                               #
+#   pip3 uninstall pycrypto     (if an old version was installed)               #
+#   pip3 uninstall crypto       (if an old version was installed)               #
+#   pip3 uninstall pycrypto     (if an old version was installed)               #
+#   python.exe -m pip install --upgrade pip                                     #
+#   pip3 install pycryptodome                                                   #
+#   pip3 install pyOpenSSL                                                      #
+# ______________________________________________________________________________#
 
 from tkinter import *
 from tkinter import messagebox, filedialog, messagebox, ttk
+from tkinter import filedialog as fd  # imports the filedialog  box
 
 #   Crypto import
 from Crypto.Cipher import DES, DES3, AES, PKCS1_OAEP
@@ -111,12 +123,13 @@ def about():
     about_label.pack(fill=X)
 '''
 root = Tk()
-CryB_ver = "02.02.00"
-CryB_yr = "2023.09.18"
+CryB_ver = "02.03.02"
+CryB_yr = "2024.12.09"
 root.title('CryptoBox' + " (v" + CryB_ver +")")
-root.geometry("540x500+300+300")    #("560x480+0+0") for Linux; ("530+470+20+20") for Windows
+root.geometry("540x500+200+200")    #("560x480+0+0") for Linux; ("530+470+20+20") for Windows
 root.minsize(540, 500)
 root.maxsize(540, 500)
+root.resizable(False, False)
 algo_tab = ttk.Notebook(root)
 frame_1_TDES = ttk.Frame(algo_tab)
 frame_2_AES = ttk.Frame(algo_tab)
@@ -139,19 +152,20 @@ algo_tab.add(frame_6_RNG, text='RNG\n')
 algo_tab.add(frame_7_120, text='120PINs\n')
 algo_tab.add(frame_8_ABT, text='About\n...')
 algo_tab.pack()
-algo_SLC_TDES = IntVar()
 operation_SLC_DES = IntVar()
 operation_SLC_TDES = IntVar()
 operation_SLC_AES = IntVar()
 operation_SLC_RSA = IntVar()
 operation_SLC_HASH = IntVar()
 operation_SLC_HASH_hmac = IntVar()
+
 # Enc_Dec_SLC_DES = IntVar()
 # Enc_Dec_SLC_TDES = IntVar()
 # Enc_Dec_SLC_AES = IntVar()
 MODE_SLC_TDES = IntVar()
 MODE_SLC_AES = IntVar()
 KEY_IMPORT_METHOD = IntVar()
+HASH_SOURCE_IMPORT_METHOD = IntVar()
 
 default_TDES_key = StringVar(frame_1_TDES, value = "0123456789ABCDEF123456789ABCDEF0")
 default_AES_key  = StringVar(frame_2_AES,  value = "0123456789ABCDEF123456789ABCDEF0")
@@ -164,7 +178,7 @@ global temp_d, temp_e, temp_n
 realtime = Label(root, text="", font=("Helvetica", 20))
 realtime.pack(side=LEFT)
 # Creat a Exit button
-exit_button = Button(root, text="Exit", width=10, bg='#FF5C5C', command=quit)
+exit_button = Button(root, text="Exit", width=10, bg='#FF5C5C', command=root.quit)
 exit_button.pack(side=RIGHT)
 exit_button.place(x=438, y=465)
 
@@ -202,7 +216,6 @@ class CryptoBox(Tk):
     #   Crypto function - DES
     def execution_TDES(self):
         #   algo & operation Judgment
-        selection_Algo = algo_SLC_TDES.get()
         selection_EorD = operation_SLC_TDES.get()
         key_raw_xDES = self.key_textbox_TDES.get()
         key_len_check = (len(key_raw_xDES))/2
@@ -245,58 +258,40 @@ class CryptoBox(Tk):
             print("DES/TDES key length    :", key_len, "| <Bytes>")
         print("Encryption/Decryption  :", selection_EorD, " | <1:Encryption; 2:Decryption>")
         
-
-        # print selection_EorD
-        if selection_Algo == 0:  # non DES/TDES algo
+        if selection_EorD == 0:
             self.output_textbox_TDES.delete(1.0, END)
-            self.output_textbox_TDES.insert(1.0, "Please select an algorithm")
-        
+            self.output_textbox_TDES.insert(1.0, "Operation is not correct")
+        elif selection_EorD == 1 and key_len == 8:  # Enc operation
+            #   'mode' Judgment - single DES does't need a mode selection
+            #   ECB as a default mode
+            mode = DES.MODE_ECB
+            # obj = DES.new(hkey_xDES, mode, hiv_xDES)
+            obj = DES.new(hkey_xDES, mode)
+            #   Encryption !!
+            output_raw_e = obj.encrypt(h_in_data_xDES)
+            h_out_data_e = output_raw_e.hex().upper()
+            print("DES output (Enc)       :", h_out_data_e)
+            # print h_out_data_e
+            # print output_raw_e
+            self.output_textbox_TDES.delete(1.0, END)
+            self.output_textbox_TDES.insert(1.0, h_out_data_e)
+        elif selection_EorD == 2 and key_len == 8:  # Dec operation
+            #   'mode' Judgment - single DES does't need a mode selection
+            #   ECB as a default mode
+            mode = DES.MODE_ECB
+            # obj = DES.new(hkey_xDES, mode, hiv_xDES)
+            obj = DES.new(hkey_xDES, mode)
+            #   Decryption !!
+            output_raw_d = obj.decrypt(h_in_data_xDES)
+            h_out_data_d = output_raw_d.hex().upper()
+            print("DES output (Dec)       :", h_out_data_d)
+            # print h_out_data_d
+            # print output_raw_d
+            # return pt.encode('hex')
+            self.output_textbox_TDES.delete(1.0, END)
+            self.output_textbox_TDES.insert(1.0, h_out_data_d)
 
-        elif selection_Algo == 1:  # DES algo
-            '''
-            if key_len != "16":
-                self.output_textbox_TDES.delete(1.0, END)
-                self.output_textbox_TDES.insert(1.0, "Please enter correct key")
-            #   'Enc/Dec' Judgment, and execute!!!
-            '''
-            if selection_EorD == 0 or key_len != 8:
-                self.output_textbox_TDES.delete(1.0, END)
-                self.output_textbox_TDES.insert(1.0, "Key length or Operation is not correct")
-            elif selection_EorD == 1 and key_len == 8:  # Enc operation
-                #   'mode' Judgment - single DES does't need a mode selection
-                #   ECB as a default mode
-                mode = DES.MODE_ECB
-                # obj = DES.new(hkey_xDES, mode, hiv_xDES)
-                obj = DES.new(hkey_xDES, mode)
-                #   Encryption !!
-                output_raw_e = obj.encrypt(h_in_data_xDES)
-                h_out_data_e = output_raw_e.hex().upper()
-                print("DES output (Enc)       :", h_out_data_e)
-                # print h_out_data_e
-                # print output_raw_e
-                self.output_textbox_TDES.delete(1.0, END)
-                self.output_textbox_TDES.insert(1.0, h_out_data_e)
-            elif selection_EorD == 2 and key_len == 8:  # Dec operation
-                #   'mode' Judgment - single DES does't need a mode selection
-                #   ECB as a default mode
-                mode = DES.MODE_ECB
-                # obj = DES.new(hkey_xDES, mode, hiv_xDES)
-                obj = DES.new(hkey_xDES, mode)
-                #   Decryption !!
-                output_raw_d = obj.decrypt(h_in_data_xDES)
-                h_out_data_d = output_raw_d.hex().upper()
-                print("DES output (Dec)       :", h_out_data_d)
-                # print h_out_data_d
-                # print output_raw_d
-                # return pt.encode('hex')
-                self.output_textbox_TDES.delete(1.0, END)
-                self.output_textbox_TDES.insert(1.0, h_out_data_d)
-            else:
-                print("\nUnknow error. Please send this error to nigel.zhai@ul.com")
-                # else: pass
-        
-
-        elif selection_Algo == 2:  # TDES algo
+        elif key_len == 16 or key_len == 24:  # TDES algo
             mode_judge = MODE_SLC_TDES.get()
             if mode_judge == 1:
                 mode = DES.MODE_ECB
@@ -325,10 +320,9 @@ class CryptoBox(Tk):
                 
                 #   ECB does not requires iv. Avoid iv in obj
                 if mode_judge == 1:
-                    obj = DES3.new(hkey_xDES, mode)
+                    obj = DES3.new(hkey_xDES, DES.MODE_ECB)
                 else:
                     obj = DES3.new(hkey_xDES, mode, hiv_xDES)
-
                 
                 #   Encryption !! - TDES
                 output_raw_e = obj.encrypt(h_in_data_xDES)
@@ -345,8 +339,8 @@ class CryptoBox(Tk):
                 #   ECB as a default mode
                 # mode = DES.MODE_ECB
 
-                if mode == 1:
-                    obj = DES3.new(hkey_xDES, mode)
+                if mode_judge == 1:
+                    obj = DES3.new(hkey_xDES, DES.MODE_ECB)
                 else:
                     obj = DES3.new(hkey_xDES, mode, hiv_xDES)
                 
@@ -721,18 +715,27 @@ class CryptoBox(Tk):
         self.rsa_data_out.delete(1.0, END)
         self.rsa_data_out.insert(1.0, plaintext_output)
 
-    
     #   HASH/HMAC function - SHA, SHA224, SHA256, SHA384, SHA512, MD4, MD5, HMAC ??
     def execution_HASH(self):
         hash_algo_selector = operation_SLC_HASH.get()
         hash_algo_selector_hmac = operation_SLC_HASH_hmac.get()
+        #   When HASH_SOURCE_IMPORT_METHOD is '0' -> hash source button is not pressed.
+        #   When HASH_SOURCE_IMPORT_METHOD is '1' -> hash a hex data.
+        #   When HASH_SOURCE_IMPORT_METHOD is '2' -> hash a file
+        hash_source_flag = HASH_SOURCE_IMPORT_METHOD.get()
+        
+        if hash_source_flag == 0:
+            self.hash_output_text.delete(1.0, END)
+            self.hash_output_text.insert(1.0, "Please select an hash Source via the buttons above!")
+            print("[debug] hash_source_flag:", hash_source_flag)
         
         #   HASH operations
         #   to verify the results, go https://emn178.github.io/online-tools/sha256.html
-        if hash_algo_selector_hmac ==0:
+        elif hash_source_flag == 1 and hash_algo_selector_hmac ==0:
             if hash_algo_selector == 0:
                 self.hash_output_text.delete(1.0, END)
                 self.hash_output_text.insert(1.0, "Please select a hash alogrithm")
+                pass
             elif hash_algo_selector == 1:
                 hash_algo = SHA
             elif hash_algo_selector ==2:
@@ -778,14 +781,14 @@ class CryptoBox(Tk):
                     h_output_hash = ret.hex()
                     self.hash_output_text.delete(1.0, END)
                     self.hash_output_text.insert(1.0, h_output_hash)
-                    print("HASH result (hex):")
+                    print("Hashed value (hex):")
                     print(h_output_hash, "\n")
                 else:
                     pass
 
         #   HMAC operation
         #   to verify the results, go https://www.liavaag.org/English/SHA-Generator/HMAC/
-        elif hash_algo_selector_hmac == 1:
+        elif hash_source_flag == 1 and hash_algo_selector_hmac == 1:
             hmac_key = self.hash_hmac_key_entry.get()
             h_hmac_key = bytes.fromhex(hmac_key.replace(' ', ''))
             hmac_data = self.hash_input_entry.get()
@@ -830,8 +833,54 @@ class CryptoBox(Tk):
                 obj_hmac = HMAC.new(h_hmac_key, h_hmac_data, hash_algo)
                 self.hash_output_text.delete(1.0, END)
                 self.hash_output_text.insert(1.0, obj_hmac.digest().hex().upper())
-                print("HMAC result:")
+                print("Hashed value:")
                 print(obj_hmac.digest().hex().upper(), "\n")
+
+        elif hash_source_flag == 2:
+            to_be_hashed_file = fd.askopenfilename()
+            self.file_path_output_text.delete(1.0, END)
+            self.file_path_output_text.insert(1.0, to_be_hashed_file)
+            with open(to_be_hashed_file,"rb") as hash_object:
+                hash_obj = hash_object.read() # read file as bytes
+                
+                if hash_algo_selector == 1:
+                    readable_hash = hashlib.sha1(hash_obj).hexdigest();
+                elif hash_algo_selector ==3:
+                    readable_hash = hashlib.md5(hash_obj).hexdigest();
+                elif hash_algo_selector ==5:
+                    readable_hash = hashlib.sha224(hash_obj).hexdigest();
+                elif hash_algo_selector ==6:
+                    readable_hash = hashlib.sha256(hash_obj).hexdigest();
+                elif hash_algo_selector ==7:
+                    readable_hash = hashlib.sha384(hash_obj).hexdigest();
+                elif hash_algo_selector ==8:
+                    readable_hash = hashlib.sha512(hash_obj).hexdigest();
+                elif hash_algo_selector ==9:
+                    readable_hash = hashlib.sha3_224(hash_obj).hexdigest();
+                elif hash_algo_selector ==10:
+                    readable_hash = hashlib.sha3_256(hash_obj).hexdigest();
+                elif hash_algo_selector ==11:
+                    readable_hash = hashlib.sha3_2384(hash_obj).hexdigest();
+                elif hash_algo_selector ==12:
+                    readable_hash = hashlib.sha3_512(hash_obj).hexdigest();
+                elif hash_algo_selector ==2:
+                    self.hash_output_text.delete(1.0, END)
+                    self.hash_output_text.insert(1.0, "Sorry. Hashing a file by MD4 is not support!")
+                    pass
+                else:
+                    pass
+                self.hash_output_text.delete(1.0, END)
+                self.hash_output_text.insert(1.0, readable_hash)
+                print("Hashed file name:")
+                print(to_be_hashed_file)
+
+                print("Hashed value:")
+                print(readable_hash.upper(), "\n")
+                
+                # if hash_algo_selector ==2:
+                #     self.hash_output_text.delete(1.0, END)
+                #     self.hash_output_text.insert(1.0, "Sorry. Hashing a file by MD4 is not support!")
+                # print(readable_hash)
 
 
     #   Crypto function - XOR
@@ -939,6 +988,7 @@ class CryptoBox(Tk):
 
     def contact_developer(self):
         messagebox.showinfo("Developer info", "nigel.zhai@ul.com\n\nThank you for your feedback!")
+        
         #webbrowser.open_new(r"fill-a-web-address-start-with-http://")
 
     def input_file():
@@ -961,141 +1011,96 @@ class CryptoBox(Tk):
     def __init__(self, *args, **kwargs):
 
         #   1.1 TDES - Encryption or Decryption Selection Frame
-        self.algo_bar_TDES = LabelFrame(frame_1_TDES, text="DES/TDES", font=("Helvetica", 12, "bold"),
-                                           padx=5, pady=5, bd=4)
-        self.algo_bar_TDES.grid(row=0, column=1, rowspan=4, sticky=W)
-        self.algo_label_DES = Radiobutton(self.algo_bar_TDES, text="DES ", indicatoron=0, value=1, width=10,
-                                             variable=algo_SLC_TDES)
-        self.algo_label_DES.grid(row=1, column=1, padx=5, pady=5)
-        self.algo_label_TDES = Radiobutton(self.algo_bar_TDES, text="TDES", indicatoron=0, value=2, width=10,
-                                              variable=algo_SLC_TDES)
-        self.algo_label_TDES.grid(row=2, column=1, padx=5, pady=5)
-        self.operation_bar_TDES = LabelFrame(frame_1_TDES, text="Enc/Dec", font=("Helvetica", 12, "bold"),
-                                                padx=5, pady=5, bd=4)
-        self.operation_bar_TDES.grid(row=0, column=2, rowspan=4, sticky=N)
-        self.Enc_label_TDES = Radiobutton(self.operation_bar_TDES, text="Enc ", indicatoron=0, value=1, width=10,
-                                             variable=operation_SLC_TDES)
-        self.Enc_label_TDES.grid(row=1, column=2, padx=5, pady=5)
-        self.Dec_label_TDES = Radiobutton(self.operation_bar_TDES, text="Dec ", indicatoron=0, value=2, width=10,
-                                             variable=operation_SLC_TDES)
-        self.Dec_label_TDES.grid(row=2, column=2, padx=5, pady=5)
+        self.operation_bar_TDES = LabelFrame(frame_1_TDES, text="Enc/Dec", font=("Helvetica", 12, "bold"), padx=5, pady=5, bd=4)
+        self.operation_bar_TDES.grid(row=0, column=1, padx=5, sticky=W)
+        self.Enc_label_TDES = Radiobutton(self.operation_bar_TDES, text="Enc ", indicatoron=0, value=1, width=10, variable=operation_SLC_TDES)
+        self.Enc_label_TDES.grid(row=1, column=1, padx=5, pady=5)
+        self.Dec_label_TDES = Radiobutton(self.operation_bar_TDES, text="Dec ", indicatoron=0, value=2, width=10, variable=operation_SLC_TDES)
+        self.Dec_label_TDES.grid(row=2, column=1, padx=5, pady=5)
         #   1.2 Modes Selection Frame
-        self.Mode_bar_TDES = LabelFrame(frame_1_TDES, text="Modes", font=("Helvetica", 12, "bold"),
-                                           padx=5, pady=5, bd=4)
-        self.Mode_bar_TDES.grid(row=0, column=3, rowspan=4, sticky=E)
-        self.mode_ECB_TDES = Radiobutton(self.Mode_bar_TDES, text="ECB ", indicatoron=0, value=1, width=10,
-                                            variable=MODE_SLC_TDES)
-        self.mode_ECB_TDES.grid(row=1, column=3, padx=5, pady=5)
-        self.mode_CBC_TDES = Radiobutton(self.Mode_bar_TDES, text="CBC ", indicatoron=0, value=2, width=10,
-                                            variable=MODE_SLC_TDES)
-        self.mode_CBC_TDES.grid(row=2, column=3, padx=5, pady=5)
-        self.mode_CFB_TDES = Radiobutton(self.Mode_bar_TDES, text="CFB ", indicatoron=0, value=3, width=10,
-                                            variable=MODE_SLC_TDES)
-        self.mode_CFB_TDES.grid(row=1, column=4, padx=5, pady=5)
-        self.mode_OFB_TDES = Radiobutton(self.Mode_bar_TDES, text="OFB ", indicatoron=0, value=4, width=10,
-                                            variable=MODE_SLC_TDES)
-        self.mode_OFB_TDES.grid(row=2, column=4, padx=5, pady=5)
-        #   1.3 Key Entry Textbox
+        self.Mode_bar_TDES = LabelFrame(frame_1_TDES, text="Modes", font=("Helvetica", 12, "bold"), padx=5, pady=5, bd=4)
+        self.Mode_bar_TDES.grid(row=0, column=2, rowspan=2, sticky=W)
+        self.mode_ECB_TDES = Radiobutton(self.Mode_bar_TDES, text="ECB ", indicatoron=0, value=1, width=10, variable=MODE_SLC_TDES)
+        self.mode_ECB_TDES.grid(row=1, column=2, padx=5, pady=5)
+        self.mode_CBC_TDES = Radiobutton(self.Mode_bar_TDES, text="CBC ", indicatoron=0, value=2, width=10, variable=MODE_SLC_TDES)
+        self.mode_CBC_TDES.grid(row=2, column=2, padx=5, pady=5)
+        self.mode_CFB_TDES = Radiobutton(self.Mode_bar_TDES, text="CFB ", indicatoron=0, value=3, width=10, variable=MODE_SLC_TDES)
+        self.mode_CFB_TDES.grid(row=1, column=3, padx=5, pady=5)
+        self.mode_OFB_TDES = Radiobutton(self.Mode_bar_TDES, text="OFB ", indicatoron=0, value=4, width=10, variable=MODE_SLC_TDES)
+        self.mode_OFB_TDES.grid(row=2, column=3, padx=5, pady=5)
+        
+        #   1.4 Key Entry Textbox
         self.key_label_TDES = Label(frame_1_TDES, text="Key value")
         self.key_label_TDES.grid(row=5, column=0, sticky=E)
         self.key_textbox_TDES = Entry(frame_1_TDES, textvariable = default_TDES_key, font = "Courier 9", width=64)
-        self.key_textbox_TDES.grid(row=5, column=1, columnspan=3, padx=5, pady=5, sticky=W)
+        self.key_textbox_TDES.grid(row=5, column=1, columnspan=4, padx=5, pady=5, sticky=W)
         #   RULER !
         self.ruler = Label(frame_1_TDES, text="|----8 Bytes---||----8 Bytes---||----8 Bytes---|", font="Courier 9",width=48)
-        self.ruler.grid(row=6, column=1, columnspan=3, padx=6, sticky=W)
-        '''
-        #   1.3.1 key length
-        self.key_ck_TDES = Label(frame_1_TDES, text="len:")
-        self.key_ck_TDES.grid(row=5, column=4)
-        self.key_ck_value_TDES = Text(frame_1_TDES, font = "Courier 9", height=1, width=4)
-        self.key_ck_value_TDES.grid(row=5, column=5)
-        '''
-        #   1.4 IV Entry Textbox
+        self.ruler.grid(row=6, column=1, columnspan=4, padx=6, sticky=W)
+        #   1.5 IV Entry Textbox
         self.iv_label_TDES = Label(frame_1_TDES, text="IV")
         self.iv_label_TDES.grid(row=7, column=0, sticky=E)
         self.iv_textbox_TDES = Entry(frame_1_TDES, textvariable = default_iv_8B, font = "Courier 9", width=64)
-        self.iv_textbox_TDES.grid(row=7, column=1, columnspan=3, padx=5, pady=5, sticky=W)
-
-        #   1.5 Input  Data Entry Textbox
+        self.iv_textbox_TDES.grid(row=7, column=1, columnspan=4, padx=5, pady=5, sticky=W)
+        #   1.6 Input  Data Entry Textbox
         self.input_label_TDES = Label(frame_1_TDES, text="Input")
         self.input_label_TDES.grid(row=8, column=0, sticky=E)
         self.input_textbox_TDES = Entry(frame_1_TDES, font = "Courier 9", width=64)
-        self.input_textbox_TDES.grid(row=8, column=1, columnspan=3, padx=5, pady=5, sticky=W)
-
-        #   Scroll of the input text box
-        # self.input_scroll = Scrollbar(self.input_textbox)
-        # self.input_scroll.config(yscrollcommand = self.input_scroll.set)
-        # self.input_scroll.config(command = self.input_scroll.yview)
-        # self.input_scroll.pack(side = RIGHT, fill = Y)
+        self.input_textbox_TDES.grid(row=8, column=1, columnspan=4, padx=5, pady=5, sticky=W)
         #   RULER !
         self.ruler = Label(frame_1_TDES, text="|----8 Bytes---||----8 Bytes---||----8 Bytes---||----8 Bytes---|", font="Courier 9",width=64)
-        self.ruler.grid(row=9, column=1, columnspan=3, padx=6, sticky=W)
-        #   1.6 Output Data Entry Textbox
+        self.ruler.grid(row=9, column=1, columnspan=4, padx=6, sticky=W)
+        #   1.7 Output Data Entry Textbox
         self.output_label_TDES = Label(frame_1_TDES, text="Output")
         self.output_label_TDES.grid(row=10, column=0, sticky=E)
         self.output_textbox_TDES = Text(frame_1_TDES, font = "Courier 9", height=8, width=64)
-        self.output_textbox_TDES.grid(row=10, column=1, columnspan=3, padx=5, pady=5, sticky=W)
-        #self.scroll = Scrollbar(root, command=self.output_label_TDES.yview)
-        #self.output_textbox_TDES.configure(yscrollcommand=scroll.set)
+        self.output_textbox_TDES.grid(row=10, column=1, columnspan=4, padx=5, pady=5, sticky=W)
 
-        #   Scroll of the output text box
-        # self.input_scroll = Scrollbar(self.input_textbox)
-        # self.input_scroll.config(yscrollcommand = self.input_scroll.set)
-        # self.input_scroll.config(command = self.input_scroll.yview)
-        # self.input_scroll.pack(side = RIGHT, fill = Y)
-
-        #   1.7 Go Button and Exit Button
-        self.go_button_TDES = Button(frame_1_TDES, text="Use output\nas the key", width=10,
-                                        command=self.copy_key_value_TDES)
+        #   1.8 Go Button and Exit Button
+        self.go_button_TDES = Button(frame_1_TDES, text="Use output\nas the key", width=10, command=self.copy_key_value_TDES)
         self.go_button_TDES.grid(row=11, column=1, padx=5, pady=5, sticky=W)
         self.go_button_TDES = Button(frame_1_TDES, text="Go!", width=10, bg='#D1FFBD', command=self.execution_TDES)
-        self.go_button_TDES.grid(row=11, column=3, padx=5, pady=5, sticky=E)
+        self.go_button_TDES.grid(row=11, column=4, padx=5, pady=5, sticky=E)
 
         #   2.1 AES - Encryption or Decryption Selection Frame
         self.EncOrDec_bar_AES = LabelFrame(frame_2_AES, text="Enc/Dec", font=("Helvetica", 12, "bold"), padx=5, pady=5, bd=4)
-        self.EncOrDec_bar_AES.grid(row=1, column=2, rowspan=4, sticky=N)
-        self.Enc_label_AES = Radiobutton(self.EncOrDec_bar_AES, text="Enc ", indicatoron=0, value=1, width=10,
-                                            variable=operation_SLC_AES)
-        self.Enc_label_AES.grid(row=2, column=2, padx=5, pady=5)
-        self.Dec_label_AES = Radiobutton(self.EncOrDec_bar_AES, text="Dec ", indicatoron=0, value=2, width=10,
-                                            variable=operation_SLC_AES)
-        self.Dec_label_AES.grid(row=3, column=2, padx=5, pady=5)
+        self.EncOrDec_bar_AES.grid(row=0, column=1, padx=5, sticky=W)
+        self.Enc_label_AES = Radiobutton(self.EncOrDec_bar_AES, text="Enc ", indicatoron=0, value=1, width=10, variable=operation_SLC_AES)
+        self.Enc_label_AES.grid(row=1, column=1, padx=5, pady=5)
+        self.Dec_label_AES = Radiobutton(self.EncOrDec_bar_AES, text="Dec ", indicatoron=0, value=2, width=10, variable=operation_SLC_AES)
+        self.Dec_label_AES.grid(row=2, column=1, padx=5, pady=5)
         #   2.2 Modes Selection Frame
         self.Mode_bar_AES = LabelFrame(frame_2_AES, text="Modes", font=("Helvetica", 12, "bold"), padx=5, pady=5, bd=4)
-        self.Mode_bar_AES.grid(row=1, column=3, rowspan=4, sticky=E)
-        self.mode_ECB_AES = Radiobutton(self.Mode_bar_AES, text="ECB ", indicatoron=0, value=1, width=10,
-                                           variable=MODE_SLC_AES)
-        self.mode_ECB_AES.grid(row=2, column=3, padx=5, pady=5)
-        self.mode_CBC_AES = Radiobutton(self.Mode_bar_AES, text="CBC ", indicatoron=0, value=2, width=10,
-                                           variable=MODE_SLC_AES)
-        self.mode_CBC_AES.grid(row=3, column=3, padx=5, pady=5)
-        self.mode_CFB_AES = Radiobutton(self.Mode_bar_AES, text="CFB ", indicatoron=0, value=3, width=10,
-                                           variable=MODE_SLC_AES)
-        self.mode_CFB_AES.grid(row = 2, column = 4, padx=5, pady=5)
-        self.mode_OFB_AES = Radiobutton(self.Mode_bar_AES, text="OFB ", indicatoron=0, value=4, width=10,
-                                           variable=MODE_SLC_AES)
-        self.mode_OFB_AES.grid(row=3, column=4, padx=5, pady=5)
+        self.Mode_bar_AES.grid(row=0, column=2, rowspan=2, sticky=W)
+        self.mode_ECB_AES = Radiobutton(self.Mode_bar_AES, text="ECB ", indicatoron=0, value=1, width=10, variable=MODE_SLC_AES)
+        self.mode_ECB_AES.grid(row=1, column=2, padx=5, pady=5)
+        self.mode_CBC_AES = Radiobutton(self.Mode_bar_AES, text="CBC ", indicatoron=0, value=2, width=10, variable=MODE_SLC_AES)
+        self.mode_CBC_AES.grid(row=2, column=2, padx=5, pady=5)
+        self.mode_CFB_AES = Radiobutton(self.Mode_bar_AES, text="CFB ", indicatoron=0, value=3, width=10, variable=MODE_SLC_AES)
+        self.mode_CFB_AES.grid(row = 1, column=3, padx=5, pady=5)
+        self.mode_OFB_AES = Radiobutton(self.Mode_bar_AES, text="OFB ", indicatoron=0, value=4, width=10, variable=MODE_SLC_AES)
+        self.mode_OFB_AES.grid(row=2, column=3, padx=5, pady=5)
         #   2.3 Key Entry Textbox
         self.key_label_AES = Label(frame_2_AES, text="Key value")
         self.key_label_AES.grid(row=5, column=0, sticky=E)
         self.key_textbox_AES = Entry(frame_2_AES, textvariable = default_AES_key,font = "Courier 9", width=64)
-        self.key_textbox_AES.grid(row=5, column=1, columnspan=3, padx=5, pady=5, sticky=W)
+        self.key_textbox_AES.grid(row=5, column=1, columnspan=4, padx=5, pady=5, sticky=W)
         #   RULER !
         self.ruler = Label(frame_2_AES, text="|----8 Bytes---||----8 Bytes---||----8 Bytes---||----8 Bytes---|", font="Courier 9", width=64)
-        self.ruler.grid(row=6, column=1, columnspan=3, padx=6, sticky=W)
+        self.ruler.grid(row=6, column=1, columnspan=4, padx=6, sticky=W)
         #   2.4 IV Entry Textbox
         self.iv_label_AES = Label(frame_2_AES, text="IV")
         self.iv_label_AES.grid(row=7, column=0, sticky=E)
         self.iv_textbox_AES = Entry(frame_2_AES, textvariable = default_iv_16B, font = "Courier 9", width=64)
-        self.iv_textbox_AES.grid(row=7, column=1, columnspan=3, padx=5, pady=5, sticky=W)
+        self.iv_textbox_AES.grid(row=7, column=1, columnspan=4, padx=5, pady=5, sticky=W)
         #   2.5 Input  Data Entry Textbox
         self.input_label_AES = Label(frame_2_AES, text="Input")
         self.input_label_AES.grid(row=8, column=0, sticky=E)
         self.input_textbox_AES = Entry(frame_2_AES, font = "Courier 9", width=64)
-        self.input_textbox_AES.grid(row=8, column=1, columnspan=3, padx=5, pady=5, sticky=W)
+        self.input_textbox_AES.grid(row=8, column=1, columnspan=4, padx=5, pady=5, sticky=W)
         #   RULER !
         self.ruler = Label(frame_2_AES, text="|----8 Bytes---||----8 Bytes---||----8 Bytes---||----8 Bytes---|", font="Courier 9", width=64)
-        self.ruler.grid(row=9, column=1, columnspan=3, padx=6, sticky=W)
+        self.ruler.grid(row=9, column=1, columnspan=4, padx=6, sticky=W)
         #   Scroll of the input text box
         # self.input_scroll = Scrollbar(self.input_textbox)
         # self.input_scroll.config(yscrollcommand = self.input_scroll.set)
@@ -1105,7 +1110,7 @@ class CryptoBox(Tk):
         self.output_label_AES = Label(frame_2_AES, text="Output")
         self.output_label_AES.grid(row=10, column=0, sticky=E)
         self.output_textbox_AES = Text(frame_2_AES, font = "Courier 9", height=8, width=64)
-        self.output_textbox_AES.grid(row=10, column=1, columnspan=3, padx=5, pady=5, sticky=W)
+        self.output_textbox_AES.grid(row=10, column=1, columnspan=4, padx=5, pady=5, sticky=W)
         #   Scroll of the output text box
         # self.input_scroll = Scrollbar(self.input_textbox)
         # self.input_scroll.config(yscrollcommand = self.input_scroll.set)
@@ -1116,7 +1121,7 @@ class CryptoBox(Tk):
                                        command=self.copy_key_value_AES)
         self.go_button_AES.grid(row=11, column=1, padx=5, pady=5, sticky=W)
         self.go_button_AES = Button(frame_2_AES, text="Go!", width=10, bg='#D1FFBD', command=self.execution_AES)
-        self.go_button_AES.grid(row=11, column=3, padx=5, pady=5, sticky=E)
+        self.go_button_AES.grid(row=11, column=4, padx=5, pady=5, sticky=E)
 
         #   3_1   RSA Gen.
 
@@ -1160,11 +1165,9 @@ class CryptoBox(Tk):
                                             font=("Helvetica", 12, "bold"), padx=5, pady=5)
         self.rsa_key_import.grid(row=1, column=2, rowspan=4, sticky=W)
 
-
         self.rsa_import_meth_1 = Radiobutton(self.rsa_key_import, text="Import keys from .imp files",
                                                 indicator=0, value=1, width=22, variable=KEY_IMPORT_METHOD)
         self.rsa_import_meth_1.grid(row=2, column=2, padx=5, pady=1, sticky = W)
-
         self.rsa_import_meth_2 = Radiobutton(self.rsa_key_import, text="Import keys to the 3 boxes ",
                                                 indicator=0, value=2, width=22, variable=KEY_IMPORT_METHOD)
         self.rsa_import_meth_2.grid(row=3, column=2, padx=5, pady=1, sticky = W)
@@ -1197,10 +1200,10 @@ class CryptoBox(Tk):
         self.EncOrDec_bar_RSA.grid(row=1, column=1, rowspan=4, sticky=W+N)
         self.Enc_label_RSA = Radiobutton(self.EncOrDec_bar_RSA, text="Enc", indicatoron=0, value=1, width=10,
                                             variable=operation_SLC_RSA)
-        self.Enc_label_RSA.grid(row=2, column=1, padx=3, pady=5)
+        self.Enc_label_RSA.grid(row=2, column=1, padx=5, pady=5)
         self.Dec_label_RSA = Radiobutton(self.EncOrDec_bar_RSA, text="Dec", indicatoron=0, value=2, width=10,
                                             variable=operation_SLC_RSA)
-        self.Dec_label_RSA.grid(row=3, column=1, padx=3, pady=5)
+        self.Dec_label_RSA.grid(row=3, column=1, padx=5, pady=5)
         '''
 
         #   3_3.2 input file - plaintext/enciphered binary data
@@ -1231,64 +1234,82 @@ class CryptoBox(Tk):
         self.rsa_note.config(justify=LEFT)
         self.rsa_note.grid(row=4, column=2, rowspan=3, padx=5, sticky=W+N)
 
-        '''
-        self.key_label_RSA = Label(frame_3_1_RSA, text="Key value: ")
-        self.key_label_RSA.grid(row = 5, column = 0)
-        self.key_textbox_AES= Entry(frame_2_AES, width = 41)
-        self.key_textbox_AES.grid(row = 5, column = 1, columnspan = 2, padx=5, pady=5, sticky=W)
-        '''
-
-        #   4   Hash - (SHA, SHA224, SHA256, SHA384, SHA512, MD4, MD5, HMAC??)
+        #   4.1 Hash - (SHA, SHA224, SHA256, SHA384, SHA512, MD4, MD5, HMAC??)
         self.HASH_frame = LabelFrame(frame_4_HASH, text=" Algorithms ", font=("Helvetica", 12, "bold"), padx=5, pady=5, bd=4)
-        self.HASH_frame.grid(row=1, column=1, rowspan=4, columnspan=4, sticky=W)
-        #   4.1 algorithm selection buttons
-        self.hash_SHA_1 = Radiobutton(self.HASH_frame, text="SHA", indicator=0, value=1, width=11, variable=operation_SLC_HASH)
+        self.HASH_frame.grid(row=1, column=1, rowspan=4, columnspan=3, padx=5, sticky=W)
+        #   4.1.1 algorithm selection buttons
+        self.hash_SHA_1 = Radiobutton(self.HASH_frame, text="SHA", indicator=0, value=1, width=8, variable=operation_SLC_HASH)
         self.hash_SHA_1.grid(row=2, column=1, padx=5, pady=5)
-        self.hash_MD4 = Radiobutton(self.HASH_frame, text="MD4", indicator=0, value=2, width=11, variable=operation_SLC_HASH)
+        self.hash_MD4 = Radiobutton(self.HASH_frame, text="MD4", indicator=0, value=2, width=8, variable=operation_SLC_HASH)
         self.hash_MD4.grid(row=2, column=2, padx=5, pady=5)
-        self.hash_MD5 = Radiobutton(self.HASH_frame, text="MD5", indicator=0, value=3, width=11, variable=operation_SLC_HASH)
+        self.hash_MD5 = Radiobutton(self.HASH_frame, text="MD5", indicator=0, value=3, width=8, variable=operation_SLC_HASH)
         self.hash_MD5.grid(row=2, column=3, padx=5, pady=5)
-        self.hash_HMAC = Checkbutton(self.HASH_frame, text="HMAC", width=10, variable=operation_SLC_HASH_hmac)
-        self.hash_HMAC.grid(row=2, column=4, padx=5, pady=5)
-        self.hash_SHA2_224 = Radiobutton(self.HASH_frame, text="SHA224", indicator=0, value=5, width=11, variable=operation_SLC_HASH)
+        
+        self.hash_SHA2_224 = Radiobutton(self.HASH_frame, text="SHA224", indicator=0, value=5, width=8, variable=operation_SLC_HASH)
         self.hash_SHA2_224.grid(row=3, column=1, padx=5, pady=5)
-        self.hash_SHA2_256 = Radiobutton(self.HASH_frame, text="SHA256", indicator=0, value=6, width=11, variable=operation_SLC_HASH)
+        self.hash_SHA2_256 = Radiobutton(self.HASH_frame, text="SHA256", indicator=0, value=6, width=8, variable=operation_SLC_HASH)
         self.hash_SHA2_256.grid(row=3, column=2, padx=5, pady=5)
-        self.hash_SHA2_384 = Radiobutton(self.HASH_frame, text="SHA384", indicator=0, value=7, width=11, variable=operation_SLC_HASH)
+        self.hash_SHA2_384 = Radiobutton(self.HASH_frame, text="SHA384", indicator=0, value=7, width=8, variable=operation_SLC_HASH)
         self.hash_SHA2_384.grid(row=3, column=3, padx=5, pady=5)
-        self.hash_SHA2_512 = Radiobutton(self.HASH_frame, text="SHA512", indicator=0, value=8, width=11, variable=operation_SLC_HASH)
-        self.hash_SHA2_512.grid(row=3, column=4, padx=5, pady=5)
-        self.hash_SHA3_224 = Radiobutton(self.HASH_frame, text="SHA3_224", indicator=0, value=9, width=11, variable=operation_SLC_HASH)
-        self.hash_SHA3_224.grid(row=4, column=1, padx=5, pady=5)
-        self.hash_SHA3_256 = Radiobutton(self.HASH_frame, text="SHA3_256", indicator=0, value=10, width=11, variable=operation_SLC_HASH)
-        self.hash_SHA3_256.grid(row=4, column=2, padx=5, pady=5)
-        self.hash_SHA3_384 = Radiobutton(self.HASH_frame, text="SHA3_384", indicator=0, value=11, width=11, variable=operation_SLC_HASH)
-        self.hash_SHA3_384.grid(row=4, column=3, padx=5, pady=5)
-        self.hash_SHA3_512 = Radiobutton(self.HASH_frame, text="SHA3_512", indicator=0, value=12, width=11, variable=operation_SLC_HASH)
-        self.hash_SHA3_512.grid(row=4, column=4, padx=5, pady=5)
-        #   4.2 HMAC key input
+        self.hash_SHA2_512 = Radiobutton(self.HASH_frame, text="SHA512", indicator=0, value=8, width=8, variable=operation_SLC_HASH)
+        self.hash_SHA2_512.grid(row=4, column=1, padx=5, pady=5)
+        self.hash_SHA3_224 = Radiobutton(self.HASH_frame, text="SHA3_224", indicator=0, value=9, width=8, variable=operation_SLC_HASH)
+        self.hash_SHA3_224.grid(row=4, column=2, padx=5, pady=5)
+        self.hash_SHA3_256 = Radiobutton(self.HASH_frame, text="SHA3_256", indicator=0, value=10, width=8, variable=operation_SLC_HASH)
+        self.hash_SHA3_256.grid(row=4, column=3, padx=5, pady=5)
+        self.hash_SHA3_384 = Radiobutton(self.HASH_frame, text="SHA3_384", indicator=0, value=11, width=8, variable=operation_SLC_HASH)
+        self.hash_SHA3_384.grid(row=5, column=1, padx=5, pady=5)
+        self.hash_SHA3_512 = Radiobutton(self.HASH_frame, text="SHA3_512", indicator=0, value=12, width=8, variable=operation_SLC_HASH)
+        self.hash_SHA3_512.grid(row=5, column=2, padx=5, pady=5)
+        self.hash_HMAC = Checkbutton(self.HASH_frame, text="HMAC", width=5, variable=operation_SLC_HASH_hmac)
+        self.hash_HMAC.grid(row=5, column=3, padx=5, pady=5)
+        
+        #   4.2 Source - (Hex data, or file)
+        self.Source_frame = LabelFrame(frame_4_HASH, text=" Source ", font=("Helvetica", 12, "bold"), padx=5, pady=5, bd=4)
+        self.Source_frame.grid(row=1, column=4, rowspan=4, padx=15, sticky=NW)
+        
+        #   4.2.1 adding "Source" - new row is 6
+        # self.hash_source_label = Label(frame_4_HASH, text="Source")
+        # self.hash_source_label.grid(row=2, column=0, padx=5, pady=5, sticky=E)
+        
+        self.hash_source_data = Radiobutton(self.Source_frame, text="Hash a HEX data", indicator=0, value=1, width=15, variable=HASH_SOURCE_IMPORT_METHOD)
+        self.hash_source_data.grid(row=2, column=4, padx=5, pady=5, sticky = NE)
+        self.hash_source_file = Radiobutton(self.Source_frame, text="Hash a file", indicator=0, value=2, width=15, variable=HASH_SOURCE_IMPORT_METHOD)
+        self.hash_source_file.grid(row=3, column=4, padx=5, pady=5, sticky = NE)
+        
+        # self.hash_source_file_import = Button(self.Source_frame, text = "Import your file!", width=12, bg='#D1FFBD', command=self.hash_fileimport_func)
+        # self.hash_source_file_import.grid(row=4, column=4, padx=3, pady=8, sticky = NW)
+        
+        #   4.x adding "File path" - new row is 7
+        self.file_path_label = Label(frame_4_HASH, text="File path")
+        self.file_path_label.grid(row=7, column=0, sticky=E)
+        self.file_path_output_text = Text(frame_4_HASH, font = "Courier 9", height=2, width=64)
+        self.file_path_output_text.grid(row=7, column=1, columnspan=4, padx=5, pady=5, sticky=W)
+        
+        #   4.2 HMAC key input - was row 6. changed to 8
         self.hash_hmac_key_label = Label(frame_4_HASH, text="HMAC key")
-        self.hash_hmac_key_label.grid(row=6, column=0, padx=5, pady=5, sticky=E)
+        self.hash_hmac_key_label.grid(row=8, column=0, sticky=E)
         self.hash_hmac_key_entry = Entry(frame_4_HASH, font = "Courier 9", width=64)
-        self.hash_hmac_key_entry.grid(row=6, column=1, columnspan=2, padx=5, pady=5, sticky=W)
+        self.hash_hmac_key_entry.grid(row=8, column=1, columnspan=4, padx=5, pady=5, sticky=W)
 
-        #   RULER !
+        #   RULER ! - was row 7. changed to 9
         self.ruler = Label(frame_4_HASH, text="|----8 Bytes---||----8 Bytes---||----8 Bytes---||----8 Bytes---|", font="Courier 9", width=64)
-        self.ruler.grid(row=7, column=1, columnspan=3, padx=6, sticky=W)
+        self.ruler.grid(row=9, column=1, columnspan=4, padx=6, sticky=W)
 
-        #   4.3 Data Input
-        self.hash_input_label = Label(frame_4_HASH, text="Input")
-        self.hash_input_label.grid(row=8, column=0, padx=5, pady=5, sticky=E)
+        #   4.3 Data Input - was row 8. changed to 10
+        self.hash_input_label = Label(frame_4_HASH, text="HEX data")
+        self.hash_input_label.grid(row=10, column=0, sticky=E)
         self.hash_input_entry = Entry(frame_4_HASH, font = "Courier 9", width=64)
-        self.hash_input_entry.grid(row=8, column=1, columnspan=2, padx=5, pady=5, sticky=W)
-        #   4.4 Data Output
-        self.hash_output_label = Label(frame_4_HASH, text="Output")
-        self.hash_output_label.grid(row=9, column=0, sticky=E)
-        self.hash_output_text = Text(frame_4_HASH, font = "Courier 9", height=8, width=64)
-        self.hash_output_text.grid(row=9, column=1, columnspan=2, padx=5, pady=5, sticky=W)
-        #   4.4 Go button
+        # self.hash_input_entry = Text(frame_4_HASH, font = "Courier 9", height=2, width=64)
+        self.hash_input_entry.grid(row=10, column=1, columnspan=4, padx=5, pady=5, sticky=W)
+        #   4.4 Data Output - was row 9. changed to 11
+        self.hash_output_label = Label(frame_4_HASH, text="Hash\nResult")
+        self.hash_output_label.grid(row=11, column=0, sticky=E)
+        self.hash_output_text = Text(frame_4_HASH, font = "Courier 9", height=4, width=64)
+        self.hash_output_text.grid(row=11, column=1, columnspan=4, padx=5, pady=5, sticky=W)
+        #   4.4 Go button - was row 10. changed to 12
         self.go_button_hash = Button(frame_4_HASH, text="Go!", width=10, bg='#D1FFBD', command=self.execution_HASH)
-        self.go_button_hash.grid(row=10, column=2, padx=5, pady=5, sticky=E)
+        self.go_button_hash.grid(row=12, column=4, padx=5, pady=5, sticky=E)
 
         #   5   XOR
         self.XOR_frame = LabelFrame(frame_5_XOR, text=" XOR ", font=("Helvetica", 12, "bold"), padx=5, pady=5)
@@ -1374,7 +1395,7 @@ def quit():
 
 update_timeText()
 app = CryptoBox()
-#root.iconbitmap('NZ.ico') # adding NZ icon
-root.iconbitmap('UL.ico')  # adding UL icon
+#root.iconbitmap('C:/Python3/nigel_icon.ico')
+root.iconbitmap('NZ.ico') # adding NZ icon
+#root.iconbitmap('UL.ico')  # adding UL icon
 root.mainloop()
-
