@@ -5,17 +5,14 @@ Hash calculator, XOR, and random number generators are also upported by CryptoBo
 # Essential libraries
 To execute the CryptBox, a bunch of Python libraries need to be installed. Follow the commands below to get it done.
 
-
->pip3 uninstall pycrypto     # if an old version was installed
-
->pip3 uninstall crypto       # if an old version was installed
-
->pip3 uninstall pycrypto     # if an old version was installed
-
+# if an old version was installed
+>pip3 uninstall pycrypto
+# if an old version was installed
+>pip3 uninstall crypto
+# if an old version was installed
+>pip3 uninstall pycrypto
 >python.exe -m pip install --upgrade pip
-
 >pip3 install pycryptodome
-
 >pip3 install pyOpenSSL
 
 
