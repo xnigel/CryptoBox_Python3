@@ -22,3 +22,6 @@ Install new pip / pycrypto / pyOpenSSL
 ![image alt](https://github.com/xnigel/CryptoBox_Python3/blob/main/GUI_demo_1_DES.png)
 ![image alt](https://github.com/xnigel/CryptoBox_Python3/blob/main/GUI_demo_2_TDES.png)
 ![image alt](https://github.com/xnigel/CryptoBox_Python3/blob/main/GUI_demo_3_AES.png)
+
+<img src="https://github.com/xnigel/CryptoBox_Python3/blob/main/GUI_demo_1_DES.png" width =100>
+
