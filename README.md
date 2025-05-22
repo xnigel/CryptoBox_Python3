@@ -7,12 +7,17 @@ To execute the CryptBox, a bunch of Python libraries need to be installed. Follo
 
 if an old version was installed
 >pip3 uninstall pycrypto
+
 if an old version was installed
 >pip3 uninstall crypto
+
 if an old version was installed
 >pip3 uninstall pycrypto
+
 >python.exe -m pip install --upgrade pip
+
 >pip3 install pycryptodome
+
 >pip3 install pyOpenSSL
 
 
