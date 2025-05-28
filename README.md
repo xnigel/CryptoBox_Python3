@@ -20,6 +20,13 @@ Install new pip / pycrypto / pyOpenSSL
 
 >pip3 install pyOpenSSL
 
+## Execute the *.py file
+Executing the CryptoBox.py file, just simply type the following command:
+>python3 CryptoBox.py
+
+## Execute the *.exe file
+Running the CryptoBox.exe requires it to be placed with NZ.ico in a same directory.
+
 # Version history
 00. DES operation works very well on v00.09.09.x 201610xx
     v00.09.09 has been added new buttons:
