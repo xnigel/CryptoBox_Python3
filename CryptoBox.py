@@ -196,6 +196,14 @@ on the current CryptoBox.\n\n
 Thank you for using CryptoBox!
 '''
 
+pwd_gen_msg = '''
+Pwassword Generator is a tool to generate random passwords with:
+- Uppercase letters
+- Lowercase letters
+- Digits
+- Special characters\n
+'''
+
 class MenuBar(Frame):
     def __init__(self):
         Frame.__int__(self)
@@ -1390,6 +1398,9 @@ class CryptoBox(Tk):
         self.pwd_16dig_butt.grid(row=6, column=1, padx=5, pady=5, sticky=W)
         self.pwd_16dig_textbox = Text(self.pwd_bar, font = "Courier 9", height=2, width=64)
         self.pwd_16dig_textbox.grid(row=7, column=1, padx=5, pady=5, sticky=N+W)
+
+        self.PWD_gen_note = Label(self.pwd_bar, justify=LEFT, anchor=W, text=pwd_gen_msg)
+        self.PWD_gen_note.grid(row=8, column=0, columnspan=2, sticky='new', padx=5, pady=5)
 
         #   7   120 PINs
         self.pin_120_bar = LabelFrame(frame_7_120, text=" Elapsed time of 120 online PIN entry test ", font=("Helvetica", 12, "bold"), padx=5, pady=5)
