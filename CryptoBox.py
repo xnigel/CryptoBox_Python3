@@ -1034,9 +1034,6 @@ class CryptoBox(Tk):
             textPad.insert(1.0, f.read())
             f.close()
 
-
-
-
     #=========================================================================================================
     #   Create Frame/Label/Text/...etc
     def __init__(self, *args, **kwargs):
