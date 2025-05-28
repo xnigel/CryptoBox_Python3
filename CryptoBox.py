@@ -96,6 +96,7 @@ import binascii
 import time
 import webbrowser
 import hashlib
+import secrets
 
 
 key_pub_filename = ''
@@ -139,6 +140,7 @@ frame_3_3_RSA = ttk.Frame(algo_tab)
 frame_4_HASH = ttk.Frame(algo_tab)
 frame_5_XOR = ttk.Frame(algo_tab)
 frame_6_RNG = ttk.Frame(algo_tab)
+frame_6_PWD = ttk.Frame(algo_tab)
 frame_7_120 = ttk.Frame(algo_tab)
 frame_8_ABT = ttk.Frame(algo_tab)
 algo_tab.add(frame_1_TDES, text='TDES\n')
@@ -149,6 +151,7 @@ algo_tab.add(frame_3_3_RSA, text='RSA\nCrypto.')
 algo_tab.add(frame_4_HASH, text='HASH\n')
 algo_tab.add(frame_5_XOR, text='XOR\n')
 algo_tab.add(frame_6_RNG, text='RNG\n')
+algo_tab.add(frame_6_PWD, text='PWD\nGen')
 algo_tab.add(frame_7_120, text='120PINs\n')
 algo_tab.add(frame_8_ABT, text='About\n...')
 algo_tab.pack()
@@ -942,6 +945,25 @@ class CryptoBox(Tk):
         root.destroy()
     '''
 
+    def pwd_gen_8dig(self):
+        # Generates a random password including uppercase, lowercase, numbers, and symbols.
+        # Args:
+            # length: The desired length of the password (default is 12).
+        # Returns:
+            # A string representing the generated password.
+        alphabet = string.ascii_letters + string.digits + string.punctuation
+        password = ''.join(secrets.choice(alphabet) for _ in range(8))
+        self.pwd_8dig_textbox.delete(1.0, END)
+        self.pwd_8dig_textbox.insert(1.0, password)
+        print(password)
+    
+    def pwd_gen_16dig(self):
+        alphabet = string.ascii_letters + string.digits + string.punctuation
+        password = ''.join(secrets.choice(alphabet) for _ in range(16))
+        self.pwd_16dig_textbox.delete(1.0, END)
+        self.pwd_16dig_textbox.insert(1.0, password)
+        print(password)
+
     def p120_start(self):
         # 1. get the current time!
         log_time_temp = time.strftime("%Y/%m/%d  %H:%M:%S")
@@ -1340,21 +1362,33 @@ class CryptoBox(Tk):
         #   6   Random number generator button
         self.rng_bar_bar = LabelFrame(frame_6_RNG, text=" Random number ", font=("Helvetica", 12, "bold"), padx=5, pady=5)
         self.rng_bar_bar.grid(row=1, column=1, rowspan=4)
-        self.rng_butt_8B = Button(self.rng_bar_bar, text="Generate 8byte", command=self.rng_gen_8B)
+        self.rng_butt_8B = Button(self.rng_bar_bar, text="Generate 8-byte rng", command=self.rng_gen_8B)
         self.rng_butt_8B.grid(row=2, column=1, padx=5, pady=5, sticky=W)
         self.rng_8B_textbox = Text(self.rng_bar_bar, font = "Courier 9", height=1, width=64)
         self.rng_8B_textbox.grid(row=5, column=1, padx=5, pady=5, sticky=N+W)
 
-        self.rng_butt_32B = Button(self.rng_bar_bar, text="Generate 32byte", command=self.rng_gen_32B)
+        self.rng_butt_32B = Button(self.rng_bar_bar, text="Generate 32-byte rng", command=self.rng_gen_32B)
         self.rng_butt_32B.grid(row=6, column=1, padx=5, pady=5, sticky=W)
         self.rng_32B_textbox = Text(self.rng_bar_bar, font = "Courier 9", height=4, width=64)
         self.rng_32B_textbox.grid(row=7, column=1, padx=5, pady=5, sticky=N+W)
 
-        self.rng_butt_88B = Button(self.rng_bar_bar, text="Generate 88byte", command=self.rng_gen_88B)
+        self.rng_butt_88B = Button(self.rng_bar_bar, text="Generate 88-byte rng", command=self.rng_gen_88B)
         self.rng_butt_88B.grid(row=8, column=1, padx=5, pady=5, sticky=W)
         self.rng_88B_textbox = Text(self.rng_bar_bar, font = "Courier 9", height=4, width=64)
         self.rng_88B_textbox.grid(row=9, column=1, padx=5, pady=5, sticky=N+W)
 
+        #   6.1 PWD gen
+        self.pwd_bar = LabelFrame(frame_6_PWD, text=" Random number ", font=("Helvetica", 12, "bold"), padx=5, pady=5)
+        self.pwd_bar.grid(row=1, column=1, rowspan=4)
+        self.pwd_8dig_butt = Button(self.pwd_bar, text="Generate 8-digit password", command=self.pwd_gen_8dig)
+        self.pwd_8dig_butt.grid(row=2, column=1, padx=5, pady=5, sticky=W)
+        self.pwd_8dig_textbox = Text(self.pwd_bar, font = "Courier 9", height=2, width=64)
+        self.pwd_8dig_textbox.grid(row=5, column=1, padx=5, pady=5, sticky=N+W)
+
+        self.pwd_16dig_butt = Button(self.pwd_bar, text="Generate 16-digit password", command=self.pwd_gen_16dig)
+        self.pwd_16dig_butt.grid(row=6, column=1, padx=5, pady=5, sticky=W)
+        self.pwd_16dig_textbox = Text(self.pwd_bar, font = "Courier 9", height=2, width=64)
+        self.pwd_16dig_textbox.grid(row=7, column=1, padx=5, pady=5, sticky=N+W)
 
         #   7   120 PINs
         self.pin_120_bar = LabelFrame(frame_7_120, text=" Elapsed time of 120 online PIN entry test ", font=("Helvetica", 12, "bold"), padx=5, pady=5)
