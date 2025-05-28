@@ -1361,7 +1361,7 @@ class CryptoBox(Tk):
         self.go_button_XOR.grid(row=9, column=4, padx=5, pady=5, sticky=E)
 
         #   6   Random number generator button
-        self.rng_bar_bar = LabelFrame(frame_6_RNG, text=" Random number ", font=("Helvetica", 12, "bold"), padx=5, pady=5)
+        self.rng_bar_bar = LabelFrame(frame_6_RNG, text=" Random number generator ", font=("Helvetica", 12, "bold"), padx=5, pady=5)
         self.rng_bar_bar.grid(row=1, column=1, rowspan=4)
         self.rng_butt_8B = Button(self.rng_bar_bar, text="Generate 8-byte rng", command=self.rng_gen_8B)
         self.rng_butt_8B.grid(row=2, column=1, padx=5, pady=5, sticky=W)
@@ -1379,7 +1379,7 @@ class CryptoBox(Tk):
         self.rng_88B_textbox.grid(row=9, column=1, padx=5, pady=5, sticky=N+W)
 
         #   6.1 PWD gen
-        self.pwd_bar = LabelFrame(frame_6_PWD, text=" Random number ", font=("Helvetica", 12, "bold"), padx=5, pady=5)
+        self.pwd_bar = LabelFrame(frame_6_PWD, text=" Password generator ", font=("Helvetica", 12, "bold"), padx=5, pady=5)
         self.pwd_bar.grid(row=1, column=1, rowspan=4)
         self.pwd_8dig_butt = Button(self.pwd_bar, text="Generate 8-digit password", command=self.pwd_gen_8dig)
         self.pwd_8dig_butt.grid(row=2, column=1, padx=5, pady=5, sticky=W)
