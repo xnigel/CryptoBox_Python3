@@ -57,6 +57,7 @@
 #   21. Correcting the functionalities in the Python3 code 20230919 - v02.01.02
 #   22. Released final version - v02.02.00
 #   23. Adding new files hasing - v02.03.xx - from 2024.10.25
+#   24. Adding password generator - v02.04.01 - Done on 2025.05.28
 # ______________________________________________________________________________#
 
 #   Python Execution Guidance                                                   #    
@@ -124,8 +125,8 @@ def about():
     about_label.pack(fill=X)
 '''
 root = Tk()
-CryB_ver = "02.03.02"
-CryB_yr = "2024.12.09"
+CryB_ver = "02.04.01"
+CryB_yr = "2025.05.28"
 root.title('CryptoBox' + " (v" + CryB_ver +")")
 root.geometry("540x500+200+200")    #("560x480+0+0") for Linux; ("530+470+20+20") for Windows
 root.minsize(540, 500)
