@@ -22,8 +22,8 @@ Install new pip / pycrypto / pyOpenSSL
 <img src="https://github.com/xnigel/CryptoBox_Python3/blob/main/GUI_demo_1_DES.png" width =250> <img src="https://github.com/xnigel/CryptoBox_Python3/blob/main/GUI_demo_2_TDES.png" width =250> <img src="https://github.com/xnigel/CryptoBox_Python3/blob/main/GUI_demo_3_AES.png" width =250>
 
 # Version history
-DES operation works very well on v00.09.09.x 201610xx
-v00.09.09 has been added new buttons:
+00. DES operation works very well on v00.09.09.x 201610xx
+    v00.09.09 has been added new buttons:
 01. TDES algorithm has been added !!! Works well !!!
 02. AES  algorithm has been added !!! Works well !!!
 03. Random number generator has been added !!! Works well !!!
