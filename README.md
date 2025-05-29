@@ -3,7 +3,7 @@ CryptoBox is a cryptographical tool with GUI being used for encrypting and decry
 Hash calculator, XOR, and random number generators are also upported by CryptoBox.
 
 # Exceute CryptoBox
-<img src="https://github.com/xnigel/CryptoBox_Python3/blob/main/GUI_demo_1_DES.png" width =250> <img src="https://github.com/xnigel/CryptoBox_Python3/blob/main/GUI_demo_2_TDES.png" width =250> <img src="https://github.com/xnigel/CryptoBox_Python3/blob/main/GUI_demo_3_AES.png" width =250>
+<img src="https://github.com/xnigel/CryptoBox_Python3/blob/main/demo_figs/GUI_demo_1_DES.png" width =250> <img src="https://github.com/xnigel/CryptoBox_Python3/blob/main/demo_figs/GUI_demo_2_TDES.png" width =250> <img src="https://github.com/xnigel/CryptoBox_Python3/blob/main/demo_figs/GUI_demo_3_AES.png" width =250>
 
 # How to setup and use
 To execute the CryptBox, a bunch of Python libraries need to be installed. Follow the commands below to get it done.
