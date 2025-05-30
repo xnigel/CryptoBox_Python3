@@ -30,6 +30,7 @@ Running the CryptoBox.exe requires it to be placed with NZ.ico in a same directo
 ## Convert *.py file to *.exe file
 When you are going to modify the original py file and want to convert it into exe format executable, you may need to perform the following commands.
 >sudo apt-get install pyinstaller
+
 Then go to the *.py directory:
 >pyinstaller.exe --onefile --windowed --icon=xxx.ico xxx.py
 
