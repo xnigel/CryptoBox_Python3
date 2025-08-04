@@ -1454,7 +1454,5 @@ def quit():
 
 update_timeText()
 app = CryptoBox()
-#root.iconbitmap('C:/Python3/nigel_icon.ico')
-root.iconbitmap('logo.ico') # adding NZ icon
-#root.iconbitmap('UL.ico')  # adding UL icon
+root.iconbitmap('logo.ico')
 root.mainloop()
