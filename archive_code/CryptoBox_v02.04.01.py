@@ -58,7 +58,7 @@
 #   22. Released final version - v02.02.00
 #   23. Adding new files hasing - v02.03.xx - from 2024.10.25
 #   24. Adding password generator - v02.04.01 - Done on 2025.05.28
-#   25. Changing icon to a single file - v02.04.02 - Done on 2025.08.04         
+#   24. Changing icon to a single file - v02.04.02 - Done on 2025.08.04         
 # ______________________________________________________________________________#
 
 #   Python Execution Guidance                                                   #    
@@ -99,7 +99,7 @@ import time
 import webbrowser
 import hashlib
 import secrets
-import base64
+
 
 key_pub_filename = ''
 key_pri_filename = ''
@@ -116,10 +116,19 @@ def update_timeText():
     root.after(100, update_timeText)
 
 
+
+'''
+def author(): showinfo('Author','UL-TS Australia\n' 'Nigel Z.\n')
+def about():
+    about_window = Toplevel(root)
+    about_window.geometry("250x50+100+1000")
+    about_label = Label(about_window, text='CryptoBox\n Version 00.01.02\n Copyright 2016  Nigel Z.  All rights reserved.')
+    about_label.pack(fill=X)
+'''
 root = Tk()
-CryB_ver = "02.04.02"
+CryB_ver = "02.04.01"
 CryB_yr = "2025.05.28"
-root.title('CryptoBox' + " (v" + CryB_ver +") Nigel Zhai")
+root.title('CryptoBox' + " (v" + CryB_ver +")")
 root.geometry("540x500+200+200")    #("560x480+0+0") for Linux; ("530+470+20+20") for Windows
 root.minsize(540, 500)
 root.maxsize(540, 500)
@@ -1431,6 +1440,6 @@ def quit():
 update_timeText()
 app = CryptoBox()
 #root.iconbitmap('C:/Python3/nigel_icon.ico')
-root.iconbitmap('logo.ico') # adding NZ icon
+root.iconbitmap('NZ.ico') # adding NZ icon
 #root.iconbitmap('UL.ico')  # adding UL icon
 root.mainloop()
