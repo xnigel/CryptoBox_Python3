@@ -119,7 +119,7 @@ def update_timeText():
 root = Tk()
 CryB_ver = "02.04.02"
 CryB_yr = "2025.05.28"
-root.title('CryptoBox' + " (v" + CryB_ver +") Nigel Zhai")
+root.title('CryptoBox' + " (v" + CryB_ver +")" + " - " + CryB_yr + " - Nigel Zhai")
 root.geometry("540x500+200+200")    #("560x480+0+0") for Linux; ("530+470+20+20") for Windows
 root.minsize(540, 500)
 root.maxsize(540, 500)
@@ -209,13 +209,13 @@ class MenuBar(Frame):
 
 class CryptoBox(Tk):
     #   GUI interface definition
-    print("\n\n===================================")
-    print("|--  Welcome to use CryptoBox   --|")
-    print("|--                             --|")
-    print("|-- Author  : nigel.zhai@ul.com --|")
-    print("|-- Version :", CryB_ver, "         --|")
-    print("|-- Date    :", CryB_yr, "       --|")
-    print("===================================\n\n")
+    print("\n\n=======================================")
+    print(    "|--    Welcome to use CryptoBox     --|")
+    print(    "|--                                 --|")
+    print(    "|-- Author  : todearnigel@gmail.com --|")
+    print(    "|-- Version :", CryB_ver, "             --|")
+    print(    "|-- Date    :", CryB_yr, "           --|")
+    print(    "=======================================\n\n")
 
     #   Crypto function - DES
     def execution_TDES(self):
