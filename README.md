@@ -28,10 +28,10 @@ Executing the CryptoBox.py file, just simply type the following command:
 >python3 CryptoBox.py
 
 ## Execute the *.exe file
-Running the CryptoBox.exe requires it to be placed with NZ.ico in a same directory.
+Simply download the CryptoBox.exe executable file and execute it from your local drive.
 
 ## Convert *.py file to *.exe file
-When you are going to modify the original py file and want to convert it into exe format executable, you may need to perform the following commands.
+When you are going to modify the original py file and convert it into exe format executable, you may need to perform the following commands.
 >sudo apt-get install pyinstaller
 
 Then go to the *.py directory:
