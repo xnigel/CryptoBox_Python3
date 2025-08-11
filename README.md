@@ -28,7 +28,7 @@ Executing the CryptoBox.py file, just simply type the following command:
 >python3 CryptoBox.py
 
 ## Execute the *.exe file
-Simply download the CryptoBox.exe executable file and execute it from your local drive.
+Simply download the CryptoBox.exe executable file from "dist" folder and execute it from your local drive.
 
 ## Convert *.py file to *.exe file
 When you are going to modify the original py file and convert it into exe format executable, you may need to perform the following commands.
