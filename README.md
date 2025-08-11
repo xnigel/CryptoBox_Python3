@@ -75,6 +75,6 @@ pyinstaller.exe --onefile --windowed --icon=xxx.ico xxx.py
 >25. Changing icon to a single file - v02.04.02 - Done on 2025.08.04
 
 # Archived Code
-The CryptoBox witten by Python 2.x was archived under CryptoBox_vPy2.x project.
+The CryptoBox witten by Python 2.x was archived under **CryptoBox_vPy2.x** project.
 
 Click here for futher information. --> [here](https://github.com/xnigel/CryptoBox_vPy2.x)
