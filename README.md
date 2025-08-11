@@ -72,4 +72,8 @@ pyinstaller.exe --onefile --windowed --icon=xxx.ico xxx.py
 >22. Released final version - v02.02.00
 >23. Adding new files hasing - v02.03.xx - from 2024.10.25
 >24. Adding password generator - v02.04.01 - Done on 2025.05.28
->25. Changing icon to a single file - v02.04.02 - Done on 2025.08.04     
+>25. Changing icon to a single file - v02.04.02 - Done on 2025.08.04
+
+# Archived Code
+The CryptoBox witten by Python 2.x was archived under XXX.
+Click here for futher information. --> [here](https://github.com/xnigel/CryptoBox_vPy2.x)
