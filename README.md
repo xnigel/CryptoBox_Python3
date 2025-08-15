@@ -2,6 +2,13 @@
 CryptoBox is a cryptographical tool with GUI being used for encrypting and decrypting via multibple algorithms, including DES, TDES, AES, RSA. 
 Hash calculator, XOR, and random number generators are also upported by CryptoBox.
 
+# Referred Standards
+- FIPS 46
+- FIPS 197
+- FIPS PUB 180
+- FIPS 180
+- NIST SP 800-90
+
 # Exceute CryptoBox
 <img src="https://github.com/xnigel/CryptoBox_vPy3.x/blob/main/demo/01_DES_TDES.png" width =250> <img src="https://github.com/xnigel/CryptoBox_vPy3.x/blob/main/demo/02_AES.png" width =250>
 <img src="https://github.com/xnigel/CryptoBox_vPy3.x/blob/main/demo/03_RSA_gen.png" width =250> <img src="https://github.com/xnigel/CryptoBox_vPy3.x/blob/main/demo/04_RSA_enc.png" width =250>
